@@ -1,0 +1,64 @@
+# Payment float risk - full run configuration.
+# Every threshold the strategy and the monitoring use lives here, so the
+# decision logic and the dashboards can never disagree.
+
+seed: 42
+data_dir: data
+artifacts_dir: artifacts
+reports_dir: reports
+
+simulation:
+  n_accounts: 20000
+  start_date: "2025-01-01"
+  as_of_date: "2025-12-31"        # returns after this date are not yet observed
+  account_open_start: "2019-01-01"
+  payments_per_month: 2.0
+  check_share: 0.15
+  bust_out_share: 0.006           # share of accounts that are bust-out fraud
+  drift_start: "2025-10-15"       # a new bust-out wave starts here
+  drift_wave_share: 0.004          # dormant accounts that start kiting after drift_start
+  feature_outage_dates: ["2025-11-18"]  # scoring fails this day; monitoring should flag it
+
+splits:                            # out-of-time, by payment date
+  train_end: "2025-06-30"
+  calibration_end: "2025-07-31"
+  selection_end: "2025-08-31"      # threshold selection; production starts the next day
+
+label:
+  window_days: 60                  # bad = returned within 60 days (covers the R10 tail)
+
+model:
+  params:
+    n_estimators: 300
+    max_depth: 3
+    learning_rate: 0.05
+    subsample: 0.8
+    colsample_bytree: 0.8
+    min_child_weight: 50
+    reg_lambda: 1.0
+    eval_metric: auc
+    tree_method: hist
+
+strategy:
+  amount_cap: 300                  # Illustrative policy: amount >= cap keeps the hold
+  prior_return_days: 180            # Illustrative policy: any prior return in this window keeps the hold
+  good_status: ["NOT_DUE", "CURRENT_DUE"]
+  # Node 2 cutoff (score <= cutoff releases) is chosen by `select-threshold`
+  # and written to artifacts/strategy.json. Set a number here to override.
+  score_threshold: null
+
+economics:                         # used to pick the threshold on expected value
+  value_per_release: 0.75          # $ value of releasing a good payment early
+  spend_share: 0.7                 # share of released credit spent before a return
+  recovery_rate: 0.3               # share of that spend later recovered
+
+monitoring:
+  maturity_days: [7, 14, 30, 60]
+  targets:
+    max_unscored_rate: 0.01
+    release_rate_band: [0.45, 0.80]
+    max_released_return_rate_30d: 0.009
+    psi_warn: 0.10
+    psi_alert: 0.25
+    min_auc: 0.70
+    max_policy_mismatches: 0

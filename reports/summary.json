@@ -1,0 +1,162 @@
+{
+  "checks": [
+    {
+      "question": "Working as expected?",
+      "name": "Unscored rate (worst day)",
+      "value": "100.0%",
+      "target": "<= 1%",
+      "status": "ALERT",
+      "note": "2025-11-18"
+    },
+    {
+      "question": "Working as expected?",
+      "name": "Policy mismatches (ledger vs. rules)",
+      "value": "0",
+      "target": "<= 0",
+      "status": "OK",
+      "note": ""
+    },
+    {
+      "question": "Working as expected?",
+      "name": "Release rate (all production)",
+      "value": "47.0%",
+      "target": "45% to 80%",
+      "status": "OK",
+      "note": ""
+    },
+    {
+      "question": "Working as expected?",
+      "name": "Released 30-day return rate, weeks after drift",
+      "value": "0.69%",
+      "target": "<= 0.90%",
+      "status": "OK",
+      "note": "before drift 0.60%; worst week 2025-11-03 at 0.80%"
+    },
+    {
+      "question": "Working as expected?",
+      "name": "Realised loss per 1,000 released",
+      "value": "$446",
+      "target": "about $58 (pre-drift)",
+      "status": "ALERT",
+      "note": "7.7x pre-drift"
+    },
+    {
+      "question": "Working as expected?",
+      "name": "Score PSI (worst week)",
+      "value": "0.006",
+      "target": "< 0.1",
+      "status": "OK",
+      "note": ""
+    },
+    {
+      "question": "Thresholds still right?",
+      "name": "Weekly AUC (worst week, 30-day label)",
+      "value": "0.755",
+      "target": ">= 0.7",
+      "status": "OK",
+      "note": ""
+    },
+    {
+      "question": "Thresholds still right?",
+      "name": "Score cutoff vs. best on recent data",
+      "value": "current 11, best 7",
+      "target": "gap within 10% of net value",
+      "status": "ALERT",
+      "note": "moving to 7 changes net value by $2,068 over 2025-10-20 to 2025-11-30"
+    },
+    {
+      "question": "Thresholds still right?",
+      "name": "Amount cap vs. best on recent data",
+      "value": "current $300, best $180",
+      "target": "gap within 10% of net value",
+      "status": "ALERT",
+      "note": "best cap with its best cutoff (75) adds $7,231"
+    }
+  ],
+  "model": {
+    "train": {
+      "n": 226999,
+      "bad_rate": 0.017700518504486805,
+      "mean_predicted": 0.017363166392451307,
+      "auc": 0.8014010256057347,
+      "ks": 0.44640912057744986,
+      "gini": 0.6028020512114693,
+      "brier": 0.015702762019196632
+    },
+    "selection": {
+      "n": 41590,
+      "bad_rate": 0.019018994950709304,
+      "mean_predicted": 0.019223146787471775,
+      "auc": 0.7776498358066274,
+      "ks": 0.4288567222449646,
+      "gini": 0.5552996716132548,
+      "brier": 0.016794003947480464
+    }
+  },
+  "strategy": {
+    "score_threshold": 11,
+    "recommended_on_selection": 11,
+    "selection_release_rate_eligible": 0.9153220245483381,
+    "selection_return_rate_released": 0.006478830797046859,
+    "amount_cap": 300,
+    "prior_return_days": 180,
+    "good_status": [
+      "NOT_DUE",
+      "CURRENT_DUE"
+    ]
+  },
+  "amount_cap_sweep": [
+    {
+      "amount_cap": 180,
+      "net_value_at_current_cutoff": 17193.09065269466,
+      "best_cutoff": 75,
+      "best_net_value": 18277.79351352311,
+      "release_rate_all_at_best": 0.44745106249345756,
+      "return_rate_released_at_best": 0.005536709946582446
+    },
+    {
+      "amount_cap": 225,
+      "net_value_at_current_cutoff": 14864.701889401149,
+      "best_cutoff": 12,
+      "best_net_value": 15182.64245962552,
+      "release_rate_all_at_best": 0.45240587599009036,
+      "return_rate_released_at_best": 0.005977401565693571
+    },
+    {
+      "amount_cap": 250,
+      "net_value_at_current_cutoff": 13907.67379684522,
+      "best_cutoff": 12,
+      "best_net_value": 14257.13501961057,
+      "release_rate_all_at_best": 0.4635890994103074,
+      "return_rate_released_at_best": 0.006247177480054192
+    },
+    {
+      "amount_cap": 275,
+      "net_value_at_current_cutoff": 11275.318489804671,
+      "best_cutoff": 12,
+      "best_net_value": 11678.779712570022,
+      "release_rate_all_at_best": 0.47470253672493806,
+      "return_rate_released_at_best": 0.006652210665588592
+    },
+    {
+      "amount_cap": 300,
+      "net_value_at_current_cutoff": 8978.60439681635,
+      "best_cutoff": 7,
+      "best_net_value": 11047.09813441659,
+      "release_rate_all_at_best": 0.3480930946648522,
+      "return_rate_released_at_best": 0.00576383319967923
+    },
+    {
+      "amount_cap": 350,
+      "net_value_at_current_cutoff": 9439.623100731964,
+      "best_cutoff": 7,
+      "best_net_value": 11194.84813441659,
+      "release_rate_all_at_best": 0.35153006036498136,
+      "return_rate_released_at_best": 0.005707479279368703
+    }
+  ],
+  "window": [
+    "2025-10-20",
+    "2025-11-30"
+  ]
+}

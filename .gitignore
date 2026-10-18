@@ -1,0 +1,15 @@
+# generated data and artifacts (rebuild with `make all`)
+data/
+data_ci/
+artifacts/
+artifacts_ci/
+reports_ci/
+
+# reports/ is committed so the README charts render on GitHub
+
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+.DS_Store

@@ -1,0 +1,60 @@
+# Small, fast configuration for CI and tests. Same logic, fewer accounts.
+
+seed: 7
+data_dir: data_ci
+artifacts_dir: artifacts_ci
+reports_dir: reports_ci
+
+simulation:
+  n_accounts: 3000
+  start_date: "2025-01-01"
+  as_of_date: "2025-12-31"
+  account_open_start: "2019-01-01"
+  payments_per_month: 2.0
+  check_share: 0.15
+  bust_out_share: 0.01
+  drift_start: "2025-10-15"
+  drift_wave_share: 0.004          # dormant accounts that start kiting after drift_start
+  feature_outage_dates: ["2025-11-18"]   # scoring fails this day; monitoring should flag it
+
+splits:
+  train_end: "2025-06-30"
+  calibration_end: "2025-07-31"
+  selection_end: "2025-08-31"
+
+label:
+  window_days: 60
+
+model:
+  params:
+    n_estimators: 150
+    max_depth: 3
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    min_child_weight: 10
+    reg_lambda: 1.0
+    eval_metric: auc
+    tree_method: hist
+
+strategy:
+  amount_cap: 300
+  prior_return_days: 180
+  good_status: ["NOT_DUE", "CURRENT_DUE"]
+  score_threshold: null
+
+economics:
+  value_per_release: 0.75
+  spend_share: 0.7
+  recovery_rate: 0.3
+
+monitoring:
+  maturity_days: [7, 14, 30, 60]
+  targets:
+    max_unscored_rate: 0.01
+    release_rate_band: [0.45, 0.80]
+    max_released_return_rate_30d: 0.009
+    psi_warn: 0.10
+    psi_alert: 0.25
+    min_auc: 0.70
+    max_policy_mismatches: 0
